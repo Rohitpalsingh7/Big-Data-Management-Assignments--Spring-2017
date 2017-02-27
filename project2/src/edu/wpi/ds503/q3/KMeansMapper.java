@@ -19,7 +19,7 @@ import org.apache.hadoop.mapreduce.Mapper;
 
 public class KMeansMapper
 
-		extends Mapper<LongWritable, PointWritable, PointWritable, PointWritable>{
+		extends Mapper<LongWritable, PointWritable, PointWritable, PointsAverageWritable>{
 
 	private static final Log LOG_JOB = LogFactory.getLog(KMeansMapper.class);
 
@@ -80,7 +80,7 @@ public class KMeansMapper
 		}
 
 		PointWritable selected_cluster = prevClusters.get(selected_cluster_index);
-		context.write(selected_cluster, value);
+		context.write(selected_cluster, new PointsAverageWritable(x, y, 1));
 	}
 
 }

@@ -26,10 +26,6 @@ public class PointsAverageWritable implements Writable {
         set(new FloatWritable(0), new FloatWritable(0), new IntWritable(0));
     }
 
-    public PointsAverageWritable(float x, float y) {
-        set(new FloatWritable(x), new FloatWritable(y), new IntWritable(1));
-    }
-
     private void set(FloatWritable x, FloatWritable y, IntWritable num) {
         this.avg_x = x;
         this.avg_y = y;

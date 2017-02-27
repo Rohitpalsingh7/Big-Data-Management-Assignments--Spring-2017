@@ -149,7 +149,7 @@ public class KMeans {
 			FileInputFormat.addInputPath(job, new Path(args[2]));
 
 			job.setMapOutputKeyClass(PointWritable.class);
-			job.setMapOutputValueClass(PointWritable.class);
+			job.setMapOutputValueClass(PointsAverageWritable.class);
 
 			FileOutputFormat.setOutputPath(job, new Path(output_fname));
 			job.setOutputKeyClass(NullWritable.class);
