@@ -5,28 +5,21 @@ import java.io.IOException;
 import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.mapreduce.Reducer;
 
-public  class KMeansCombiner  extends Reducer<PointWritable, PointWritable,PointWritable, PointsAverageWritable> {
+public  class KMeansCombiner  extends Reducer<PointWritable, PointsAverageWritable,PointWritable, PointsAverageWritable> {
 
-	public void reduce(PointWritable centroidid, Iterable<PointWritable> points, 
-			Context context
-			) throws IOException, InterruptedException {
-
+	public void reduce(PointWritable centroidid, Iterable<PointsAverageWritable> points, Context context)
+			throws IOException, InterruptedException {
+		float sumx = 0;
+		float sumy = 0;
 		int num = 0;
-		int centerx=0;
-		int centery=0;
-		for (PointWritable point : points) {
-			num++;
-			IntWritable X = point.getx();
-			IntWritable Y = point.gety();
-			int x = X.get();
-			int y = Y.get();
-		
-			centerx += x;
-			centery += y;
+		for (PointsAverageWritable point : points) {
+			sumx += (point.getAvg_x().get() * point.getNum().get());
+			sumy += (point.getAvg_y().get() * point.getNum().get());
+			num += point.getNum().get();
 		}
 
-		centerx = centerx/num;
-		centery = centery/num;
+		float centerx = sumx/num;
+		float centery = sumy/num;
 		PointsAverageWritable pointsAverageWritable = new PointsAverageWritable(centerx/(float)num, centery/(float)num , num);
 
 		context.write(centroidid , pointsAverageWritable);
