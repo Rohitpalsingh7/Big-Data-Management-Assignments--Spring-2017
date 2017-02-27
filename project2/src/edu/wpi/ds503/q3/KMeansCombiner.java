@@ -28,7 +28,7 @@ public  class KMeansCombiner  extends Reducer<PointWritable, PointWritable,Point
 		centerx = centerx/num;
 		centery = centery/num;
 		PointsAverageWritable pointsAverageWritable = new PointsAverageWritable(centerx/(float)num, centery/(float)num , num);
-		
+
 		context.write(centroidid , pointsAverageWritable);
 	}
 }

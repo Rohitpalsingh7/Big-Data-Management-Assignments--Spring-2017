@@ -19,23 +19,23 @@ import org.apache.hadoop.mapred.Reporter;
 import org.apache.hadoop.mapreduce.Reducer;
 
 
-public  class KMeansReducer  extends Reducer<PointWritable, PointWritable,NullWritable,Text> {
+public  class KMeansReducer  extends Reducer<PointWritable, PointsAverageWritable,NullWritable,Text> {
 
 	private ArrayList<PointWritable> clusters  = new ArrayList<PointWritable>();
 
-	public void reduce(PointWritable centroidid, Iterable<PointWritable> points,Context context	) throws IOException, InterruptedException {
+	public void reduce(PointWritable centroidid, Iterable<PointsAverageWritable> points,Context context	) throws IOException, InterruptedException {
 
-		int sumx = 0;
-		int sumy = 0;
+		float sumx = 0;
+		float sumy = 0;
 		int num = 0;
-		for (PointWritable point : points) {
-			sumx += point.getx().get();
-			sumy += point.gety().get();
-			num ++;
+		for (PointsAverageWritable point : points) {
+			sumx += point.getAvg_x().get() * point.getNum().get();
+			sumy += point.getAvg_y().get() * point.getNum().get();
+			num += point.getNum().get();
 		}
 
-		int x = sumx / num;
-		int y = sumy / num;
+		int x = (int)(sumx / num);
+		int y = (int) (sumy / num);
 
 		PointWritable result_point = new PointWritable(x,y);
 		//Text result = new Text(String.valueOf(result_point.getx().get()) + " " + String.valueOf(result_point.gety().get()) + " Num: "+num  + ", sumx: " + sumx + ", sumy: " + sumy);

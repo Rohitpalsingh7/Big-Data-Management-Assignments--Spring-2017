@@ -14,6 +14,7 @@ public final class PointWritable implements WritableComparable<PointWritable> {
 
     private IntWritable x;
     private IntWritable y;
+    private IntWritable num;
 
     public PointWritable() {
         super();
@@ -22,7 +23,6 @@ public final class PointWritable implements WritableComparable<PointWritable> {
     }
 
     public PointWritable(int x, int y) {
-        super();
         set(new IntWritable(x), new IntWritable(y));
     }
 
@@ -71,11 +71,6 @@ public final class PointWritable implements WritableComparable<PointWritable> {
 
     public String toString() {
         return String.valueOf(x) + " " +  String.valueOf(y);
-    }
-
-    public void fromString(String in) {
-        Scanner sr = new Scanner(in);
-        set(new IntWritable(sr.nextInt()), new IntWritable(sr.nextInt()));
     }
 
     @Override

@@ -40,14 +40,11 @@ public class KMeans {
 		FSDataInputStream fs = dfs.open (new Path (path));
 		BufferedReader br = new BufferedReader (new InputStreamReader (fs));
 
-		//FileInputStream fs= new FileInputStream(path);
-		//BufferedReader br = new BufferedReader(new InputStreamReader(fs));
-
 		try {
 			ArrayList<String> array = new ArrayList<>();
 			String line;
 			while((line = br.readLine()) != null) {
-				array.add(br.readLine());
+				array.add(line);
 			}
 			Random rand = new Random();
 
@@ -145,7 +142,7 @@ public class KMeans {
 
 			job.setJarByClass(KMeans.class);
 			job.setMapperClass(KMeansMapper.class);
-			//job.setCombinerClass(KMeansCombiner.class);
+			job.setCombinerClass(KMeansCombiner.class);
 			job.setReducerClass(KMeansReducer.class);
 
 			job.setInputFormatClass (PointFileInputFormat.class);
