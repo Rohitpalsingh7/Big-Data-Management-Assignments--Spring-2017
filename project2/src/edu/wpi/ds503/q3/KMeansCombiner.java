@@ -5,13 +5,11 @@ import java.io.IOException;
 import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.mapreduce.Reducer;
 
-public  class KMeansCombiner  extends Reducer<PointWritable, PointWritable,PointWritable,PointWritable> {
+public  class KMeansCombiner  extends Reducer<PointWritable, PointWritable,PointWritable, PointsAverageWritable> {
 
 	public void reduce(PointWritable centroidid, Iterable<PointWritable> points, 
 			Context context
 			) throws IOException, InterruptedException {
-
-		String key = centroidid.toString();
 
 		int num = 0;
 		int centerx=0;
@@ -26,14 +24,11 @@ public  class KMeansCombiner  extends Reducer<PointWritable, PointWritable,Point
 			centerx += x;
 			centery += y;
 		}
-		int sumx = centerx;
-		int sumy = centery;
-		
+
 		centerx = centerx/num;
 		centery = centery/num;
+		PointsAverageWritable pointsAverageWritable = new PointsAverageWritable(centerx/(float)num, centery/(float)num , num);
 		
-		PointWritable newcentroid = new PointWritable(centerx,centery);
-		
-		context.write(centroidid , newcentroid);
+		context.write(centroidid , pointsAverageWritable);
 	}
 }
