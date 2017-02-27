@@ -35,7 +35,7 @@ public  class KMeansReducer  extends Reducer<PointWritable, PointsAverageWritabl
 		}
 
 		int x = (int)(sumx / num);
-		int y = (int) (sumy / num);
+		int y = (int)(sumy / num);
 
 		PointWritable result_point = new PointWritable(x,y);
 		//Text result = new Text(String.valueOf(result_point.getx().get()) + " " + String.valueOf(result_point.gety().get()) + " Num: "+num  + ", sumx: " + sumx + ", sumy: " + sumy);

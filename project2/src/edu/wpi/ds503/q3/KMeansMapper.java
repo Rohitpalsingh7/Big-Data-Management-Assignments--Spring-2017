@@ -62,9 +62,6 @@ public class KMeansMapper
 
 		LOG_JOB.info("MAP");
 
-		for (int j = 0; j < prevClusters.size(); j++){
-			LOG_JOB.info(prevClusters.get(j).getx().toString() + " , " + prevClusters.get(j).gety().toString() );
-		}
     	int min_dist = (int) 9e99;
 		int selected_cluster_index = -1;
 
