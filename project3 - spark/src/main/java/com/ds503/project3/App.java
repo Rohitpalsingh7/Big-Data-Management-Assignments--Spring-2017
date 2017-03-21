@@ -11,12 +11,23 @@ import scala.Tuple2;
 
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 
 public class App
 {
+    static class ValueComparator implements
+            Comparator<Tuple2<Integer, Float>>, Serializable {
+        final static ValueComparator INSTANCE = new ValueComparator();
+        @Override
+        public int compare(Tuple2<Integer, Float> t1, Tuple2<Integer, Float> t2) {
+            return -t1._2.compareTo(t2._2);
+        }
+    }
+
     public static List<Integer> getNeighbours(int x0) {
         List<Integer> result = new ArrayList<Integer>(8);
         if (x0 % 500 !=0) // 1
@@ -103,20 +114,20 @@ public class App
             }
         });
 
-        // sort by value, swap key,value, user sort by key, then swap again to orginal
-        JavaPairRDD<Integer, Float> cellDensityPairsSortedRDD = cellDensityPairsRDD.mapToPair(new PairFunction<Tuple2<Integer, Float>, Float, Integer>() {
-            @Override
-            public Tuple2<Float, Integer> call(Tuple2<Integer, Float> integerFloatTuple2) throws Exception {
-                return integerFloatTuple2.swap();
-            }
-        }).sortByKey(false).mapToPair(new PairFunction<Tuple2<Float, Integer>, Integer, Float>() {
-            @Override
-            public Tuple2<Integer, Float> call(Tuple2<Float, Integer> floatIntegerTuple2) throws Exception {
-                return floatIntegerTuple2.swap();
-            }
-        });
+//        // sort by value, swap key,value, user sort by key, then swap again to orginal
+//        JavaPairRDD<Integer, Float> cellDensityPairsSortedRDD = cellDensityPairsRDD.mapToPair(new PairFunction<Tuple2<Integer, Float>, Float, Integer>() {
+//            @Override
+//            public Tuple2<Float, Integer> call(Tuple2<Integer, Float> integerFloatTuple2) throws Exception {
+//                return integerFloatTuple2.swap();
+//            }
+//        }).sortByKey(false).mapToPair(new PairFunction<Tuple2<Float, Integer>, Integer, Float>() {
+//            @Override
+//            public Tuple2<Integer, Float> call(Tuple2<Float, Integer> floatIntegerTuple2) throws Exception {
+//                return floatIntegerTuple2.swap();
+//            }
+//        });
 
-        List<Tuple2<Integer, Float>> top50 = cellDensityPairsSortedRDD.take(50);
+        List<Tuple2<Integer, Float>> top50 = cellDensityPairsRDD.takeOrdered(50, ValueComparator.INSTANCE);
 
         // output the whole result on a text file (not required on the HW)
         //cellDensityPairsSortedRDD.saveAsTextFile(outputDir + "All_cells_density");
@@ -142,7 +153,7 @@ public class App
 
         JavaPairRDD<Integer, Integer>  top50neighboursRdd = sc.parallelizePairs(top50neighbours);
 
-        JavaPairRDD<Integer, Float> Top50NeighboursRDD = cellDensityPairsSortedRDD.join(top50neighboursRdd).mapToPair(new PairFunction<Tuple2<Integer, Tuple2<Float, Integer>>, Integer, Float>() {
+        JavaPairRDD<Integer, Float> Top50NeighboursRDD = cellDensityPairsRDD.join(top50neighboursRdd).mapToPair(new PairFunction<Tuple2<Integer, Tuple2<Float, Integer>>, Integer, Float>() {
             @Override
             public Tuple2<Integer, Float> call(Tuple2<Integer, Tuple2<Float, Integer>> integerTuple2Tuple2) throws Exception {
                 return new Tuple2<Integer, Float>(integerTuple2Tuple2._1(), integerTuple2Tuple2._2()._1());
